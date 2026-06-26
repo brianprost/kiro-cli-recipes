@@ -2,7 +2,7 @@
 
 A collection of custom agents, hooks, and configs for Amazon Kiro CLI.
 
-## What's included
+## What's _going to be_ included
 
 - Custom agents
 - Hooks
