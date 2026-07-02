@@ -1,0 +1,60 @@
+{
+        "name": "pi",
+        "description": "A pi-flavored coding agent: minimal, direct, terminal-native. Closest experience to working with pi (the pi.dev coding harness) inside Kiro.",
+        "prompt": "file://./pi-v2-prompt.md",
+        "tools": [
+                "read",
+                "write",
+                "glob",
+                "grep",
+                "shell",
+                "web_search",
+                "web_fetch",
+                "code"
+        ],
+        "allowedTools": [
+                "read",
+                "write",
+                "glob",
+                "grep",
+                "code",
+                "web_search",
+                "web_fetch",
+                "shell"
+        ],
+        "toolsSettings": {
+                "shell": {
+                        "autoAllowReadonly": true,
+                        "deniedCommands": [
+                                "git commit .*",
+                                "git push .*",
+                                "rm -rf /.*",
+                                "sudo .*"
+                        ]
+                },
+                "web_fetch": {
+                        "trusted": [".*"]
+                }
+        },
+        "resources": [
+                "file://AGENTS.md",
+                "file://CLAUDE.md",
+                "file://README.md",
+                "file://.kiro/steering/**/*.md",
+                "skill://.agents/skills/**/SKILL.md",
+                "skill://~/.agents/skills/**/SKILL.md"
+        ],
+        "hooks": {
+                "postToolUse": [
+                        {
+                                "matcher": "fs_write",
+                                "command": "files=$(jq -r '.tool_input | .. | .path? // empty' 2>/dev/null | grep -E '\\.(ts|tsx|js|jsx|json|jsonc|css|scss)$'); [ -n \"$files\" ] && printf '%s\\n' \"$files\" | xargs bunx ultracite fix >/dev/null 2>&1; true",
+                                "timeout_ms": 15000
+                        }
+                ]
+        },
+        "includeMcpJson": false,
+        "model": "claude-opus-4.8",
+        "keyboardShortcut": "ctrl+p",
+        "welcomeMessage": "pi-style agent ready. Minimal, direct, no ceremony. What are we building?"
+}

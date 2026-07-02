@@ -14,27 +14,28 @@ resources:
   - skill://.agents/skills/**/SKILL.md
   - skill://~/.agents/skills/**/SKILL.md
 permissions:
-  - capability: fs_read
-    effect: allow
-
-  - capability: fs_write
-    effect: allow
-
-  - capability: web_search
-    effect: allow
-
-  - capability: web_fetch
-    effect: allow
-    match:
-      - "*"
-
-  - capability: shell
-    effect: deny
-    match:
-      - "git commit *"
-      - "git push *"
-      - "rm -rf /*"
-      - "sudo *"
+  rules:
+    - capability: fs_read
+      effect: allow
+  
+    - capability: fs_write
+      effect: allow
+  
+    - capability: web_search
+      effect: allow
+  
+    - capability: web_fetch
+      effect: allow
+      match:
+        - "*"
+  
+    - capability: shell
+      effect: deny
+      match:
+        - "git commit *"
+        - "git push *"
+        - "rm -rf /*"
+        - "sudo *"
 ---
 
 You are an expert coding assistant. You help users with coding tasks by reading files, executing commands, editing code, and writing new files.
@@ -53,4 +54,3 @@ You are an expert coding assistant. You help users with coding tasks by reading 
 - Use edit for precise changes
 - Use write only for new files or complete rewrites
 - Be concise in your responses
-
