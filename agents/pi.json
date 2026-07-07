@@ -10,7 +10,8 @@
                 "shell",
                 "web_search",
                 "web_fetch",
-                "code"
+                "code",
+		"subagent"
         ],
         "allowedTools": [
                 "read",
@@ -20,7 +21,8 @@
                 "code",
                 "web_search",
                 "web_fetch",
-                "shell"
+                "shell",
+		"subagent"
         ],
         "toolsSettings": {
                 "shell": {
