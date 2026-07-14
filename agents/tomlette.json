@@ -1,0 +1,60 @@
+{
+        "name": "tomlette",
+        "description": "The most capable agentic agent.",
+        "prompt": "file://./tomlette-prompt.md",
+        "tools": [
+                "read",
+                "write",
+                "shell",
+                "web_search",
+                "web_fetch",
+                "code",
+                "thinking",
+                "subagent",
+                "delegate",
+                "todo"
+        ],
+        "allowedTools": [
+                "read",
+                "write",
+                "shell",
+                "web_search",
+                "web_fetch",
+                "code",
+                "thinking",
+                "subagent",
+                "delegate",
+                "todo"
+        ],
+        "toolsSettings": {
+                "shell": {
+                        "autoAllowReadonly": true,
+                        "deniedCommands": [
+                                "git commit .*",
+                                "git push .*",
+                                "rm -rf /.*",
+                                "sudo .*"
+                        ]
+                },
+                "web_fetch": {
+                        "trusted": [".*"]
+                }
+        },
+        "resources": [
+                "file://~/.kiro/steering/AGENTS.md",
+                "file://.kiro/steering/**/*.md",
+                "file://AGENTS.md",
+                "skill://~/.agents/skills/**/SKILL.md",
+                "skill://.agents/skills/**/SKILL.md"
+        ],
+        "hooks": {
+                "postToolUse": [
+                        {
+                                "matcher": "fs_write",
+                                "command": "files=$(jq -r '.tool_input | .. | .path? // empty' 2>/dev/null | grep -E '\\.(ts|tsx|js|jsx|json|jsonc|css|scss)$'); [ -n \"$files\" ] && printf '%s\\n' \"$files\" | xargs bunx ultracite fix >/dev/null 2>&1; true",
+                                "timeout_ms": 15000
+                        }
+                ]
+        },
+        "model": "claude-opus-4.6"
+}
