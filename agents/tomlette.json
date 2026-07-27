@@ -30,8 +30,6 @@
                 "shell": {
                         "autoAllowReadonly": true,
                         "deniedCommands": [
-                                "git commit .*",
-                                "git push .*",
                                 "rm -rf /.*",
                                 "sudo .*"
                         ]
