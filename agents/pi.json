@@ -1,62 +1,125 @@
 {
-        "name": "pi",
-        "description": "A pi-flavored coding agent: minimal, direct, terminal-native. Closest experience to working with pi (the pi.dev coding harness) inside Kiro.",
-        "prompt": "file://./pi-v2-prompt.md",
-        "tools": [
-                "read",
-                "write",
-                "glob",
-                "grep",
-                "shell",
-                "web_search",
-                "web_fetch",
-                "code",
-		"subagent"
+  "name": "pi",
+  "description": "A pi-flavored coding agent: minimal, direct, terminal-native. Closest experience to working with pi (the pi.dev coding harness) inside Kiro.",
+  "prompt": "file://./pi-v2-prompt.md",
+  "tools": [
+    "code",
+    "glob",
+    "grep",
+    "read",
+    "shell",
+    "subagent",
+    "web",
+    "web_fetch",
+    "web_search",
+    "write"
+  ],
+  "allowedTools": [
+    "read",
+    "write",
+    "glob",
+    "grep",
+    "code",
+    "web_search",
+    "web_fetch",
+    "shell",
+    "subagent"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "autoAllowReadonly": true,
+      "deniedCommands": [
+        "git commit .*",
+        "git push .*",
+        "rm -rf /.*",
+        "sudo .*"
+      ]
+    },
+    "web_fetch": {
+      "trusted": [
+        ".*"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://CLAUDE.md",
+    "file://README.md",
+    "file://.kiro/steering/**/*.md",
+    "skill://.agents/skills/**/SKILL.md",
+    "skill://~/.agents/skills/**/SKILL.md"
+  ],
+  "hooks": [
+    {
+      "name": "postToolUse-0",
+      "trigger": "postToolUse",
+      "matcher": "write",
+      "action": {
+        "type": "command",
+        "command": "files=$(jq -r '.tool_input | .. | .path? // empty' 2>/dev/null | grep -E '\\.(ts|tsx|js|jsx|json|jsonc|css|scss)$'); [ -n \"$files\" ] && printf '%s\\n' \"$files\" | xargs bunx ultracite fix >/dev/null 2>&1; true"
+      },
+      "timeout": 15
+    }
+  ],
+  "includeMcpJson": false,
+  "model": "claude-opus-4.8",
+  "keyboardShortcut": "ctrl+p",
+  "welcomeMessage": "pi-style agent ready. Minimal, direct, no ceremony. What are we building?",
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": [
+          "git commit *",
+          "git push *",
+          "rm -rf /*",
+          "sudo *"
         ],
-        "allowedTools": [
-                "read",
-                "write",
-                "glob",
-                "grep",
-                "code",
-                "web_search",
-                "web_fetch",
-                "shell",
-		"subagent"
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": [
+          "*"
         ],
-        "toolsSettings": {
-                "shell": {
-                        "autoAllowReadonly": true,
-                        "deniedCommands": [
-                                "git commit .*",
-                                "git push .*",
-                                "rm -rf /.*",
-                                "sudo .*"
-                        ]
-                },
-                "web_fetch": {
-                        "trusted": [".*"]
-                }
-        },
-        "resources": [
-                "file://AGENTS.md",
-                "file://CLAUDE.md",
-                "file://README.md",
-                "file://.kiro/steering/**/*.md",
-                "skill://.agents/skills/**/SKILL.md",
-                "skill://~/.agents/skills/**/SKILL.md"
-        ],
-        "hooks": {
-                "postToolUse": [
-                        {
-                                "matcher": "fs_write",
-                                "command": "files=$(jq -r '.tool_input | .. | .path? // empty' 2>/dev/null | grep -E '\\.(ts|tsx|js|jsx|json|jsonc|css|scss)$'); [ -n \"$files\" ] && printf '%s\\n' \"$files\" | xargs bunx ultracite fix >/dev/null 2>&1; true",
-                                "timeout_ms": 15000
-                        }
-                ]
-        },
-        "includeMcpJson": false,
-        "model": "claude-opus-4.8",
-        "keyboardShortcut": "ctrl+p",
-        "welcomeMessage": "pi-style agent ready. Minimal, direct, no ceremony. What are we building?"
+        "effect": "allow"
+      },
+      {
+        "capability": "fs_read",
+        "effect": "allow"
+      },
+      {
+        "capability": "fs_write",
+        "effect": "allow"
+      },
+      {
+        "capability": "shell",
+        "effect": "allow"
+      },
+      {
+        "capability": "subagent",
+        "effect": "allow"
+      },
+      {
+        "capability": "web_fetch",
+        "effect": "allow"
+      },
+      {
+        "capability": "web_search",
+        "effect": "allow"
+      },
+      {
+        "capability": "skill",
+        "effect": "allow"
+      }
+    ],
+    "policies": [
+      "read-only-shell"
+    ]
+  },
+  "kiroUpgrade": {
+    "revision": 2,
+    "fingerprint": "sha256:03cfed5b2bc2af770d4f851ee51ea55b4310b488e256595552ff23473ee98ed5",
+    "source": "sha256:cc742dcd0ce9302f76a653f0694d43379b8cdd965232b60d7017856bd9cb2153"
+  }
 }

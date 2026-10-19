@@ -7,41 +7,83 @@
       "url": "https://mcp.context7.com/mcp"
     }
   },
-  "tools": ["read", "write", "shell", "subagent"],
+  "tools": [
+    "read",
+    "shell",
+    "subagent",
+    "write"
+  ],
   "toolAliases": {},
-  "allowedTools": ["write", "shell", "read", "subagent"],
+  "allowedTools": [
+    "write",
+    "shell",
+    "read",
+    "subagent"
+  ],
   "resources": [
     "file://AGENTS.md",
     "skill://$HOME/.agents/skills/**/SKILL.md",
     "skill://.agents/skills/**/SKILL.md"
   ],
-  "hooks": {
-    "stop": [
+  "hooks": [
+    {
+      "name": "agentSpawn-0",
+      "trigger": "agentSpawn",
+      "action": {
+        "type": "command",
+        "command": "echo '## Project Context'; echo \"Branch: $(git branch --show-current 2>/dev/null || echo 'n/a')\"; echo \"Status:\"; git status --short 2>/dev/null | head -20; echo \"Last 5 commits:\"; git log --oneline -5 2>/dev/null; echo '---'"
+      },
+      "timeout": 10
+    },
+    {
+      "name": "stop-0",
+      "trigger": "stop",
+      "action": {
+        "type": "command",
+        "command": "echo ''"
+      },
+      "timeout": 30
+    },
+    {
+      "name": "userPromptSubmit-0",
+      "trigger": "userPromptSubmit",
+      "action": {
+        "type": "command",
+        "command": "echo \"Modified files: $(git diff --name-only 2>/dev/null | tr '\\n' ', ')\""
+      },
+      "timeout": 5
+    }
+  ],
+  "includeMcpJson": true,
+  "model": "claude-opus-4.8",
+  "keyboardShortcut": "ctrl+o",
+  "permissions": {
+    "rules": [
       {
-        "command": "echo ''",
-        "timeout_ms": 30000,
-        "max_output_size": 10240,
-        "cache_ttl_seconds": 0
-      }
-    ],
-    "agentSpawn": [
+        "capability": "fs_read",
+        "effect": "allow"
+      },
       {
-        "command": "echo '## Project Context'; echo \"Branch: $(git branch --show-current 2>/dev/null || echo 'n/a')\"; echo \"Status:\"; git status --short 2>/dev/null | head -20; echo \"Last 5 commits:\"; git log --oneline -5 2>/dev/null; echo '---'",
-        "timeout_ms": 10000,
-        "max_output_size": 10240,
-        "cache_ttl_seconds": 0
-      }
-    ],
-    "userPromptSubmit": [
+        "capability": "fs_write",
+        "effect": "allow"
+      },
       {
-        "command": "echo \"Modified files: $(git diff --name-only 2>/dev/null | tr '\\n' ', ')\"",
-        "timeout_ms": 5000,
-        "max_output_size": 10240,
-        "cache_ttl_seconds": 0
+        "capability": "shell",
+        "effect": "allow"
+      },
+      {
+        "capability": "subagent",
+        "effect": "allow"
+      },
+      {
+        "capability": "skill",
+        "effect": "allow"
       }
     ]
   },
-  "includeMcpJson": true,
-  "model": "claude-opus-4.8",
-  "keyboardShortcut": "ctrl+o"
+  "kiroUpgrade": {
+    "revision": 2,
+    "fingerprint": "sha256:fa231860b87df5a954618ec3ed68b989d885a789f57fd3a104426085ae0a8193",
+    "source": "sha256:14bdcfe9c2693ea2041e965b159780b266622bd44071de9765ac6cec1da7bc9d"
+  }
 }
