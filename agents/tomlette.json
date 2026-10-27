@@ -1,7 +1,7 @@
 {
   "name": "tomlette",
-  "description": "Shim that loads repo-scope Agent Skills from .agents/skills. Permissions, model, and instructions come from global Kiro config.",
+  "description": "Shim that loads filtered repo-scope Agent Skills from .kiro/skills. Permissions, model, and instructions come from global Kiro config.",
   "resources": [
-    "skill://.agents/skills/**/SKILL.md"
+    "skill://.kiro/skills/**/SKILL.md"
   ]
 }

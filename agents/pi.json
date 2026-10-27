@@ -46,8 +46,8 @@
     "file://CLAUDE.md",
     "file://README.md",
     "file://.kiro/steering/**/*.md",
-    "skill://.agents/skills/**/SKILL.md",
-    "skill://~/.agents/skills/**/SKILL.md"
+    "skill://.kiro/skills/**/SKILL.md",
+    "skill://~/.kiro/skills/**/SKILL.md"
   ],
   "hooks": [
     {
